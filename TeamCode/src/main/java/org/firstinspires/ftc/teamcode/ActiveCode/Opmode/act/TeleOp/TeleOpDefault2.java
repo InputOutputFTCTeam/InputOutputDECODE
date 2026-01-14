@@ -147,7 +147,7 @@ public class TeleOpDefault2 extends OpMode {
         } else if (!gamepad2.x) {
             xPressed = false;
         }
-
+//
         // ===  РУЧНОЕ УПРАВЛЕНИЕ 1АРАБАНОМ ===
         if (sequenceState == SequenceState.IDLE) {
             double stickX = gamepad2.right_stick_x;
