@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.ActiveCode.Opmode.act.TEST;
+package org.firstinspires.ftc.teamcode.ActiveCode.Opmode.act.modules;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -19,7 +19,7 @@ public class cameraTEST extends LinearOpMode {
     @Override
     public void runOpMode() {
 
-        // 1) Создаём AprilTag processor
+        // 1) Создаём AprilTag processor)
         aprilTag = new AprilTagProcessor.Builder()
                 // Если знаешь семейство — можно ограничить (ускоряет):
                 // .setTagFamily(AprilTagProcessor.TagFamily.TAG_36h11)
@@ -27,7 +27,7 @@ public class cameraTEST extends LinearOpMode {
                 // .setTagLibrary(AprilTagGameDatabase.getCurrentGameTagLibrary())
                 .build();
 
-        // 2) Поднимаем VisionPortal (камера + превью + процессор)
+        // 2) Поднимаем VisionPortal (камера + превью + процессор сканирование)
         VisionPortal.Builder builder = new VisionPortal.Builder();
 
         // Выбор камеры:

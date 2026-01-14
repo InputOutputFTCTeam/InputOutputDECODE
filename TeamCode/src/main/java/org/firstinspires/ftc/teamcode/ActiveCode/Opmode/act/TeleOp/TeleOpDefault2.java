@@ -6,8 +6,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@TeleOp(name = "TeleOpDefault", group = "TeleOp")
-public class TeleOpDefault extends OpMode {
+@TeleOp(name = "TeleOpDefault2", group = "TeleOp")
+public class TeleOpDefault2 extends OpMode {
 
     // Движение
     private DcMotor frontLeft, frontRight, backLeft, backRight;
@@ -19,7 +19,7 @@ public class TeleOpDefault extends OpMode {
     private Servo servo2; // 360° (постоянное вращение)
 
     //Минимальные вращение барабаном
-    private static final double CORRECTION_SCALE = 0.25;
+    private static final double CORRECTION_SCALE = 0.1;
 
     // Положения
     private final double CLAW_OPEN_POS = 0.8;
@@ -129,6 +129,7 @@ public class TeleOpDefault extends OpMode {
         }
         uptrigger.setPower(uptriggerOn ? 1.0 : 0.0);
 */
+
         // === Клешня (A на gamepad2) ===
         if (gamepad2.a) {
             clawServo.setPosition(CLAW_CLOSE_POS);
@@ -145,6 +146,18 @@ public class TeleOpDefault extends OpMode {
             xPressed = true;
         } else if (!gamepad2.x) {
             xPressed = false;
+        }
+
+        // ===  РУЧНОЕ УПРАВЛЕНИЕ БАРАБАНОМ ===
+        if (sequenceState == SequenceState.IDLE) {
+            double stickX = gamepad2.right_stick_x;
+            if (Math.abs(stickX) > 0.1) {
+                double drumPower = 0.5 - stickX * 0.02;
+                drumPower = Math.max(0.0, Math.min(1.0, drumPower));
+                servo2.setPosition(drumPower);
+            } else {
+                servo2.setPosition(0.5);
+            }
         }
 
         // === Выполнение секвенции без delay ===
@@ -174,6 +187,13 @@ public class TeleOpDefault extends OpMode {
             default:
                 break;
         }
+        double drive = -gamepad2.left_stick_y;
+      //  double turn = -gamepad2.right_stick_x;
+        double correction = -gamepad2.right_stick_y * CORRECTION_SCALE;
+        double leftPower = drive + turn + correction;
+        double rightPower = drive - turn + correction;
+        leftPower = Math.max(-1.0, Math.min(1.0,leftPower));
+        rightPower = Math.max(-1.0, Math.min(1.0, rightPower));
 
 
 
