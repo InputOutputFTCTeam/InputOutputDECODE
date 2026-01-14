@@ -148,7 +148,7 @@ public class TeleOpDefault2 extends OpMode {
             xPressed = false;
         }
 
-        // ===  РУЧНОЕ УПРАВЛЕНИЕ БАРАБАНОМ ===
+        // ===  РУЧНОЕ УПРАВЛЕНИЕ 1АРАБАНОМ ===
         if (sequenceState == SequenceState.IDLE) {
             double stickX = gamepad2.right_stick_x;
             if (Math.abs(stickX) > 0.1) {
