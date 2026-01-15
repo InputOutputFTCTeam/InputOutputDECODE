@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.ActiveCode.Opmode.act.TeleOp;
+package org.firstinspires.ftc.teamcode.ActiveCode.Opmode.act.rarely_used.TeleOp;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@TeleOp(name = "TeleOpDefault", group = "TeleOp")
+//@TeleOp(name = "TeleOpDefault", group = "TeleOp")
 public class TeleOpDefault extends OpMode {
 
     // Движение

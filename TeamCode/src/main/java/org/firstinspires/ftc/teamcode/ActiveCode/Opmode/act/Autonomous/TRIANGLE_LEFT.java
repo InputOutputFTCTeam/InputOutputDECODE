@@ -6,6 +6,12 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.vision.VisionPortal;
+import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
+import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
+
+import java.util.List;
+
 @Autonomous(name = "triangle-LEFT", group = "Auto")
 public class TRIANGLE_LEFT extends LinearOpMode {
 
@@ -15,6 +21,9 @@ public class TRIANGLE_LEFT extends LinearOpMode {
     private static final double DRIVE_GEAR_REDUCTION = 1.0;
     private static final double WHEEL_CIRCUMFERENCE_CM = Math.PI * WHEEL_DIAMETER_CM;
     private static final double COUNTS_PER_CM = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) / WHEEL_CIRCUMFERENCE_CM;
+
+    private VisionPortal visionPortal;
+    private AprilTagProcessor aprilTag;
 
     // === Настройка поворота (может потребовать калибровки) ===
     private static final double TRACK_WIDTH_CM = 35.0;
@@ -57,6 +66,36 @@ public class TRIANGLE_LEFT extends LinearOpMode {
         waitForStart();
 
         if (opModeIsActive()) {
+            List<AprilTagDetection> detections = aprilTag.getDetections();
+
+            telemetry.addData("Detections", detections.size());
+
+            for (AprilTagDetection det : detections) {
+                // Базовое: ID и уверенность
+                telemetry.addLine("--------------------------------");
+                telemetry.addData("ID", det.id);
+                telemetry.addData("DecisionMargin", "%.1f", det.decisionMargin);
+
+                // Центр в пикселях (полезно для наведения)
+                telemetry.addData("Center (px)", "(%.0f, %.0f)", det.center.x, det.center.y);
+
+                // Если pose доступен (обычно доступен при наличии intrinsics/tag library):
+                if (det.ftcPose != null) {
+                    telemetry.addData("Range (m)", "%.3f", det.ftcPose.range);
+                    telemetry.addData("Bearing (deg)", "%.2f", det.ftcPose.bearing);
+                    telemetry.addData("Yaw (deg)", "%.2f", det.ftcPose.yaw);
+
+                    // Дополнительно:
+                    telemetry.addData("X (m)", "%.3f", det.ftcPose.x);
+                    telemetry.addData("Y (m)", "%.3f", det.ftcPose.y);
+                    telemetry.addData("Z (m)", "%.3f", det.ftcPose.z);
+                    telemetry.addData("Pitch (deg)", "%.2f", det.ftcPose.pitch);
+                    telemetry.addData("Roll (deg)", "%.2f", det.ftcPose.roll);
+                } else {
+                    telemetry.addLine("Pose: not available (no intrinsics/tag library).");
+                }
+            }
+
 
             // 1. Движение прямо на 32 см
             driveDistanceForward(32, DRIVE_POWER, leftFront, leftBack, rightFront, rightBack);
