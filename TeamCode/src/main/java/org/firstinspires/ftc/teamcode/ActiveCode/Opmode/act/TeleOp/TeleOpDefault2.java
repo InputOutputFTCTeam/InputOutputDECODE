@@ -112,7 +112,7 @@ public class TeleOpDefault2 extends OpMode {
         backRight.setPower(br);
 
         // === Toggle armMotor (B на gamepad2) ===
-        if (gamepad2.b && !bPressed) {
+        if (gamepad1.b && !bPressed) {
             armState = (armState == 1) ? 0 : 1;
             bPressed = true;
         } else if (!gamepad2.b) {
@@ -131,14 +131,14 @@ public class TeleOpDefault2 extends OpMode {
 */
 
         // === Клешня (A на gamepad2) ===
-        if (gamepad2.a) {
+        if (gamepad1.a) {
             clawServo.setPosition(CLAW_CLOSE_POS);
         } else {
             clawServo.setPosition(CLAW_OPEN_POS);
         }
 
         // === НОВАЯ СЕКВЕНЦИЯ: X на gamepad2 ===
-        if (gamepad2.x && !xPressed) {
+        if (gamepad1.x && !xPressed) {
             if (sequenceState == SequenceState.IDLE) {
                 sequenceState = SequenceState.STEP1_DOWN;
                 timer.reset();
@@ -150,7 +150,7 @@ public class TeleOpDefault2 extends OpMode {
 //
         // ===  РУЧНОЕ УПРАВЛЕНИЕ 1АРАБАНОМ ===
         if (sequenceState == SequenceState.IDLE) {
-            double stickX = gamepad2.right_stick_x;
+            double stickX = gamepad1.right_stick_x;
             if (Math.abs(stickX) > 0.1) {
                 double drumPower = 0.5 - stickX * 0.02;
                 drumPower = Math.max(0.0, Math.min(1.0, drumPower));
@@ -187,9 +187,9 @@ public class TeleOpDefault2 extends OpMode {
             default:
                 break;
         }
-        double drive = -gamepad2.left_stick_y;
+        double drive = -gamepad1.left_stick_y;
       //  double turn = -gamepad2.right_stick_x;
-        double correction = -gamepad2.right_stick_y * CORRECTION_SCALE;
+        double correction = -gamepad1.right_stick_y * CORRECTION_SCALE;
         double leftPower = drive + turn + correction;
         double rightPower = drive - turn + correction;
         leftPower = Math.max(-1.0, Math.min(1.0,leftPower));
