@@ -108,6 +108,13 @@ public class big_blue_triangle extends LinearOpMode {
 
             telemetry.addData("Detections", detections.size());
 
+            int detectedId = -1;
+            for (AprilTagDetection det : detections) {
+
+                telemetry.addData("Detections", detections.size());
+
+            }
+
             for (AprilTagDetection det : detections) {
                 // Базовое: ID и уверенность
                 telemetry.addLine("--------------------------------");
@@ -131,13 +138,156 @@ public class big_blue_triangle extends LinearOpMode {
                     telemetry.addData("Roll (deg)", "%.2f", det.ftcPose.roll);
                 } else {
                     telemetry.addLine("Pose: not available (no intrinsics/tag library).");
+                    if (detectedId == -1) {
+                        detectedId = det.id;
+                    }
                 }
             }
+
+            if(detectedId==21) {
+                armMotor.setPower(1);
+
+                clawServo.setPosition(0.1); // верх
+                sleep(300);
+                clawServo.setPosition(0.8); // вниз
+                sleep(500);
+
+                drumServo.setPosition(DRUM_FORWARD);
+                sleep(DRUM_DURATION_MS);
+                drumServo.setPosition(DRUM_STOP);
+                sleep(250);
+
+                clawServo.setPosition(0.1); // верх
+                sleep(300);
+                clawServo.setPosition(0.8); // вниз
+                sleep(500);
+
+                drumServo.setPosition(DRUM_FORWARD);
+                sleep(DRUM_DURATION_MS);
+                drumServo.setPosition(DRUM_STOP);
+                sleep(250);
+
+                clawServo.setPosition(0.1); // верх
+                sleep(300);
+                clawServo.setPosition(0.8); // вниз
+                sleep(500);
+
+
+            }
+
+            else if (detectedId==22) {
+                armMotor.setPower(1);
+                drumServo.setPosition(DRUM_FORWARD);
+                sleep(DRUM_DURATION_MS);
+                drumServo.setPosition(DRUM_STOP);
+                sleep(250);
+
+                clawServo.setPosition(0.1);
+                sleep(300);
+                clawServo.setPosition(0.8);
+                sleep(500);
+
+                drumServo.setPosition(DRUM_FORWARD);
+                sleep(DRUM_DURATION_MS);
+                drumServo.setPosition(DRUM_STOP);
+                sleep(250);
+
+                drumServo.setPosition(DRUM_FORWARD);
+                sleep(DRUM_DURATION_MS);
+                drumServo.setPosition(DRUM_STOP);
+                sleep(250);
+
+                clawServo.setPosition(0.1);
+                sleep(300);
+                clawServo.setPosition(0.8);
+                sleep(500);
+
+                drumServo.setPosition(DRUM_FORWARD);
+                sleep(DRUM_DURATION_MS);
+                drumServo.setPosition(DRUM_STOP);
+                sleep(250);
+                drumServo.setPosition(DRUM_FORWARD);
+                sleep(DRUM_DURATION_MS);
+                drumServo.setPosition(DRUM_STOP);
+                sleep(250);
+
+                clawServo.setPosition(0.1);
+                sleep(300);
+                clawServo.setPosition(0.8);
+                sleep(500);
+                armMotor.setPower(0);
+            }
+            else if(detectedId==23){
+                drumServo.setPosition(DRUM_FORWARD);
+                sleep(DRUM_DURATION_MS);
+                drumServo.setPosition(DRUM_STOP);
+                sleep(250);
+
+                clawServo.setPosition(0.1);
+                sleep(300);
+                clawServo.setPosition(0.8);
+                sleep(500);
+
+                drumServo.setPosition(DRUM_FORWARD);
+                sleep(DRUM_DURATION_MS);
+                drumServo.setPosition(DRUM_STOP);
+                sleep(250);
+
+                clawServo.setPosition(0.1);
+                sleep(300);
+                clawServo.setPosition(0.8);
+                sleep(500);
+
+                drumServo.setPosition(DRUM_FORWARD);
+                sleep(DRUM_DURATION_MS);
+                drumServo.setPosition(DRUM_STOP);
+                sleep(250);
+
+                clawServo.setPosition(0.1);
+                sleep(300);
+                clawServo.setPosition(0.8);
+                sleep(500);
+                armMotor.setPower(0);
+            }
+            else {
+                armMotor.setPower(1);
+
+                clawServo.setPosition(0.1);
+                sleep(300);
+                clawServo.setPosition(0.8);
+                sleep(500);
+                armMotor.setPower(0);
+
+                drumServo.setPosition(DRUM_FORWARD);
+                sleep(DRUM_DURATION_MS);
+                drumServo.setPosition(DRUM_STOP);
+                sleep(250);
+
+                clawServo.setPosition(0.1);
+                sleep(300);
+                clawServo.setPosition(0.8);
+                sleep(500);
+                armMotor.setPower(0);
+
+                drumServo.setPosition(DRUM_FORWARD);
+                sleep(DRUM_DURATION_MS);
+                drumServo.setPosition(DRUM_STOP);
+                sleep(250);
+
+                clawServo.setPosition(0.1);
+                sleep(300);
+                clawServo.setPosition(0.8);
+                sleep(500);
+                armMotor.setPower(0);
+            }
+                
+
+
 
             // === Исходная последовательность (зеркально: заменяем повороты) ===
 
             // 1. Запустить armMotor
-            armMotor.setPower(1);
+           /* armMotor.setPower(1);
 
             // 2. Проехать 10 см назад
             driveDistanceBackward(8.0, DRIVE_POWER, leftFront, leftBack, rightFront, rightBack);
@@ -302,6 +452,8 @@ public class big_blue_triangle extends LinearOpMode {
 
             // 32. Выключить armMotor
             armMotor.setPower(0.0);
+
+            */
 
             // === Завершение ===
             stopDriveMotors(leftFront, leftBack, rightFront, rightBack);

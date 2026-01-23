@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.ActiveCode.Opmode.act.rarely_used.Autonomous;
+package org.firstinspires.ftc.teamcode.ActiveCode.Opmode.act.trash.rarely_used.Autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;

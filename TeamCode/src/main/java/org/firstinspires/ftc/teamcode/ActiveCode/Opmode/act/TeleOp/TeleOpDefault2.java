@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.ActiveCode.Opmode.act.TeleOp;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -12,6 +13,7 @@ public class TeleOpDefault2 extends OpMode {
     // Движение
     private DcMotor frontLeft, frontRight, backLeft, backRight;
     private DcMotor armMotor;
+    private DcMotor armMotor1;
     private Servo clawServo;
     private DcMotor uptrigger;
 
@@ -35,8 +37,10 @@ public class TeleOpDefault2 extends OpMode {
     private boolean yPressedArm = false; // для armMotor
 
     // Состояние uptrigger (отдельно!)
+    private boolean yPressedLast = false;
     private boolean uptriggerOn = false;
     private boolean yPressedUptrigger = false;
+    private boolean motorsRunning = false;
 
     // Автомат для последовательности
     private enum SequenceState {
@@ -57,6 +61,7 @@ public class TeleOpDefault2 extends OpMode {
         backLeft = hardwareMap.get(DcMotor.class, "backLeft");
         backRight = hardwareMap.get(DcMotor.class, "backRight");
         armMotor = hardwareMap.get(DcMotor.class, "armMotor");
+        armMotor1 = hardwareMap.get(DcMotor.class, "armMotor1");
         clawServo = hardwareMap.get(Servo.class, "clawServo");
         uptrigger = hardwareMap.get(DcMotor.class, "uptrigger");
 
@@ -69,12 +74,18 @@ public class TeleOpDefault2 extends OpMode {
         frontRight.setDirection(DcMotor.Direction.FORWARD);
         backRight.setDirection(DcMotor.Direction.FORWARD);
 
+        frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
         // Режимы
         frontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         frontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         backLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         backRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         armMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        armMotor1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         uptrigger.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         // Исходные позиции
@@ -87,8 +98,8 @@ public class TeleOpDefault2 extends OpMode {
     @Override
     public void loop() {
         // === Управление движением (Gamepad 1) ===
-        double y = -gamepad1.left_stick_y;
-        double x = gamepad1.left_stick_x;
+        double y = -gamepad1.left_stick_x;
+        double x = gamepad1.left_stick_y;
         double turn = 0.0;
 
         if (gamepad1.left_bumper) {
@@ -112,13 +123,13 @@ public class TeleOpDefault2 extends OpMode {
         backRight.setPower(br);
 
         // === Toggle armMotor (B на gamepad2) ===
-        if (gamepad1.b && !bPressed) {
-            armState = (armState == 1) ? 0 : 1;
-            bPressed = true;
-        } else if (!gamepad2.b) {
-            bPressed = false;
-        }
-        armMotor.setPower(armState == 1 ? 1.0 : (armState == -1 ? -1.0 : 0.0));
+       // if (gamepad1.b && !bPressed) {
+       //     armState = (armState == 1) ? 0 : 1;
+       //     bPressed = true;
+        //} else if (!gamepad2.b) {
+        //    bPressed = false;
+       // }
+       // armMotor.setPower(armState == 1 ? 0.01 : (armState == -1 ? -0.01 : 0.0));
 
    /*     // === Toggle uptrigger (Y на gamepad2) ===
         if (gamepad2.y && !yPressedUptrigger) {
@@ -129,6 +140,14 @@ public class TeleOpDefault2 extends OpMode {
         }
         uptrigger.setPower(uptriggerOn ? 1.0 : 0.0);
 */
+        boolean yPressedNow = gamepad1.y;
+        if (yPressedNow && !yPressedLast) {
+            motorsRunning = !motorsRunning;
+        }
+        yPressedLast = yPressedNow;
+        double power = motorsRunning ? 0.5 : 0.0;
+        armMotor.setPower(power);
+        armMotor1.setPower(power);
 
         // === Клешня (A на gamepad2) ===
         if (gamepad1.a) {
@@ -188,7 +207,6 @@ public class TeleOpDefault2 extends OpMode {
                 break;
         }
         double drive = -gamepad1.left_stick_y;
-      //  double turn = -gamepad2.right_stick_x;
         double correction = -gamepad1.right_stick_y * CORRECTION_SCALE;
         double leftPower = drive + turn + correction;
         double rightPower = drive - turn + correction;

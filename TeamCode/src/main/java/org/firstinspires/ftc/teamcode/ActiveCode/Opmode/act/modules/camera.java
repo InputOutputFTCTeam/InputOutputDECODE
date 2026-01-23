@@ -11,7 +11,7 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 import java.util.List;
 
 @TeleOp(name = "AprilTag Scan (VisionPortal)", group = "Vision")
-public class cameraTEST extends LinearOpMode {
+public class camera extends LinearOpMode {
 
     private VisionPortal visionPortal;
     private AprilTagProcessor aprilTag;

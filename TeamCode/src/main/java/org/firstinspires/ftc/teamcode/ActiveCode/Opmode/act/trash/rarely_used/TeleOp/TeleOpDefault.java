@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.ActiveCode.Opmode.act.rarely_used.TeleOp;
+package org.firstinspires.ftc.teamcode.ActiveCode.Opmode.act.trash.rarely_used.TeleOp;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
