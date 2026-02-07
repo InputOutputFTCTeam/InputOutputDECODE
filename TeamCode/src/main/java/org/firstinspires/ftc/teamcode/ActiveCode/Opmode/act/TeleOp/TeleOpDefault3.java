@@ -7,8 +7,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@TeleOp(name = "TeleOp1Player", group = "TeleOp")
-public class TeleOpDefault2 extends OpMode {
+@TeleOp(name = "TeleOp2Player", group = "TeleOp")
+public class TeleOpDefault3 extends OpMode {
 
     // Движение
     private DcMotor frontLeft, frontRight, backLeft, backRight;
@@ -85,15 +85,30 @@ public class TeleOpDefault2 extends OpMode {
 
     @Override
     public void loop ( ) {
-        // === Управление движением (Gamepad 1) ===
-        double driveSpeedScale = gamepad2.b ? 0.2 : 1.0;
-        double y = -gamepad1.left_stick_y;
-        double x = gamepad1.left_stick_x;
+        // === Управление движением
+        double driveSpeedScale = gamepad1.b ? 0.2 : 1.0;
+        double y = gamepad1.left_stick_y * driveSpeedScale;
+        double x = -gamepad1.left_stick_x * driveSpeedScale;
         double turn = 0.0;
+
+
+        if (armState == 1) {
+            double forward = 0.2;
+            frontLeft.setPower(forward);
+            backLeft.setPower(forward);
+            frontRight.setPower(forward);
+            backRight.setPower(forward);
+        } else {
+            double fl = y + x + turn;
+            double fr = y - x - turn;
+            double bl = y - x + turn;
+            double br = y + x - turn;
+        }
+
         if (gamepad1.left_bumper) {
-            turn = -TURN_POWER2;
+            turn = -TURN_POWER2 * driveSpeedScale;
         } else if (gamepad1.right_bumper) {
-            turn = TURN_POWER2;
+            turn = TURN_POWER2 * driveSpeedScale;
         }
 
         double fl = y + x + turn;
@@ -101,15 +116,16 @@ public class TeleOpDefault2 extends OpMode {
         double bl = y - x + turn;
         double br = y + x - turn;
 
+        //// Нормализация (если сумма > 1.0)
         double max = Math.max(1.0, Math.max(Math.abs(fl),
-                Math.max(Math.abs(fr), Math.max(Math.abs(bl), Math.abs(br)))));
+               Math.max(Math.abs(fr), Math.max(Math.abs(bl), Math.abs(br)))));
         if (max > 1.0) {
             fl /= max;
             fr /= max;
             bl /= max;
             br /= max;
         }
-
+        //
         frontLeft.setPower(fl);
         frontRight.setPower(fr);
         backLeft.setPower(bl);
@@ -125,16 +141,16 @@ public class TeleOpDefault2 extends OpMode {
         armMotor.setPower(armState == 1 ? 1.0 : 0.0);
 
         // === Клешня (A на gamepad2) ===
-        if (gamepad1.a) {
+        if (gamepad2.a) {
             clawServo.setPosition(CLAW_CLOSE_POS);
         } else {
             clawServo.setPosition(CLAW_OPEN_POS);
         }
 
-        if (gamepad1.x) {
+        if (gamepad2.x) {
             servo2.setPower(1);
 
-        } else if (gamepad1.y) {
+        } else if (gamepad2.y) {
             servo2.setPower(-1);
         } else {
             servo2.setPower(0);
