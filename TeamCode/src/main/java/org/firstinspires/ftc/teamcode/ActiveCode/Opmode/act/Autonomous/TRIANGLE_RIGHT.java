@@ -44,6 +44,7 @@ public class TRIANGLE_RIGHT extends LinearOpMode {
 
         // === Начальное положение серво (закрыто) ===
         clawServo.setPosition(0.8);
+        //catch_up.setPosition(1);
 
         telemetry.addData("Status", "Ready. Waiting for start...");
         telemetry.update();
@@ -53,13 +54,13 @@ public class TRIANGLE_RIGHT extends LinearOpMode {
         if (opModeIsActive()) {
 
             // 1. Движение прямо на 32 см
-            driveDistanceForward(32, DRIVE_POWER, leftFront, leftBack, rightFront, rightBack);
+        //    driveDistanceForward(32, DRIVE_POWER, leftFront, leftBack, rightFront, rightBack);
 
             // 2. Поворот направо на 30 градусов
-            turnRight(30, TURN_POWER, leftFront, leftBack, rightFront, rightBack);
+       //     turnRight(30, TURN_POWER, leftFront, leftBack, rightFront, rightBack);
 
             //3. вперед
-            driveDistanceForward(5,DRIVE_POWER,leftFront,leftBack,rightFront,rightBack);
+          //  driveDistanceForward(5,DRIVE_POWER,leftFront,leftBack,rightFront,rightBack);
 
 
 

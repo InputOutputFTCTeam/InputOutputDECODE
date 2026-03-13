@@ -28,14 +28,16 @@ public class big_red_triangle extends LinearOpMode {
     private static final double TRACK_WIDTH_CM = 35.0;
     private static final double COUNTS_PER_DEGREE = (TRACK_WIDTH_CM * Math.PI / WHEEL_CIRCUMFERENCE_CM) * COUNTS_PER_MOTOR_REV / 360.0;
 
-    private static final double DRIVE_POWER = 0.15;
+    private static final double DRIVE_POWER = 1;
     private static final double TURN_POWER = 1.0;
 
     // === Настройки барабана ===
-    private static final double DRUM_FORWARD = -1.0;     // Для continuous rotation servo
-    private static final double DRUM_STOP = 0.5;
-    private static final int DRUM_DURATION_MS = 200;
-
+   // private static final double DRUM_FORWARD = -1.0;     // Для continuous rotation servo
+  //  private static final double DRUM_STOP = 0.5;
+  //  private static final int DRUM_DURATION_MS = 200;
+    private static final double DRUM_POS_0 = 0.0;        // 0°
+    private static final double DRUM_POS_120 = 0.5;   // ≈ 0.444
+    private static final double DRUM_POS_240 = 1;   // ≈ 0.889
     // Камера
     private VisionPortal visionPortal;
     private AprilTagProcessor aprilTag;
@@ -64,9 +66,15 @@ public class big_red_triangle extends LinearOpMode {
         DcMotor rightFront = hardwareMap.get(DcMotor.class, "frontRight");
         DcMotor rightBack = hardwareMap.get(DcMotor.class, "backRight");
 
-        DcMotor armMotor = hardwareMap.get(DcMotor.class, "armMotor");
+        DcMotor armMotor = hardwareMap.get(DcMotor.class, "1motor_shooter");
         Servo clawServo = hardwareMap.get(Servo.class, "clawServo");
-        Servo drumServo = hardwareMap.get(Servo.class, "servo2");
+        Servo drumServo = hardwareMap.get(Servo.class, "carousel");
+        DcMotor catchMotor = hardwareMap.get(DcMotor.class, "catch");
+        DcMotor CatchMotor1 = hardwareMap.get(DcMotor.class, "catch1");
+        Servo servoGun = hardwareMap.get(Servo.class, "guide");//servoGun
+        Servo catch_up = hardwareMap.get(Servo.class,"catch_up");
+        //Servo servoGun =hardwareMap.get(Servo.class,"servoGun");
+
 
         // === Направление моторов — все REVERSE (как у вас) ===
         leftFront.setDirection(DcMotor.Direction.REVERSE);
@@ -76,6 +84,9 @@ public class big_red_triangle extends LinearOpMode {
 
         // === Начальное положение серво ===
         clawServo.setPosition(0.8); // Закрыто
+        drumServo.setPosition(0);
+        catch_up.setPosition(1);
+        servoGun.setPosition(1);
 
         telemetry.addData("Status", "Initialized - LEFT SIDE");
         telemetry.update();
@@ -83,10 +94,12 @@ public class big_red_triangle extends LinearOpMode {
         waitForStart();
 
         // Сначала отъезжаем назад ПРЯМО
-        driveDistanceForward(20.0, DRIVE_POWER, leftFront, leftBack, rightFront, rightBack);
-        sleep(500);
+       // driveDistanceForward(20.0, DRIVE_POWER, leftFront, leftBack, rightFront, rightBack);
+       // sleep(500);
 
         // turnLeft( 15,TURN_POWER,leftFront,leftBack,rightFront,rightBack);
+        sleep(200);
+        servoGun.setPosition(0.4);
 
 
 
@@ -101,64 +114,35 @@ public class big_red_triangle extends LinearOpMode {
                 telemetry.addLine("⚠️ No AprilTag detected! Executing fallback...");
                 telemetry.update();
 
-                driveDistanceBackward(15.0, DRIVE_POWER, leftFront, leftBack, rightFront, rightBack);
-                sleep(500);
+              //  driveDistanceBackward(15.0, DRIVE_POWER, leftFront, leftBack, rightFront, rightBack);
+               // sleep(500);
+                //servoGun.setPosition(0.5);
 
                 armMotor.setPower(1);
                 sleep(1000);
                 clawServo.setPosition(0.1);
                 sleep(300);
                 clawServo.setPosition(0.8);
-                sleep(500);
-                //armMotor.setPower(0);
+                sleep(5000);
 
-                drumServo.setPosition(DRUM_FORWARD); sleep(DRUM_DURATION_MS);
-                drumServo.setPosition(DRUM_STOP);
-                sleep(10);
-                drumServo.setPosition(DRUM_FORWARD); sleep(DRUM_DURATION_MS);
-                drumServo.setPosition(DRUM_STOP);
-                sleep(10);
-                drumServo.setPosition(DRUM_FORWARD); sleep(DRUM_DURATION_MS);
-                drumServo.setPosition(DRUM_STOP);
-                sleep(10);
-                armMotor.setPower(1);
-                sleep(1000);
+
+                drumServo.setPosition(DRUM_POS_120);
+                sleep(3000);
                 clawServo.setPosition(0.1);
+                sleep(300);
+                clawServo.setPosition(0.8);
+                sleep(5000);
+                drumServo.setPosition(DRUM_POS_240);
+                sleep(3000);
+                clawServo.setPosition(0.1);
+                sleep(300);
+                clawServo.setPosition(0.8);
+                sleep(5000);
+
                 sleep(300);
                 clawServo.setPosition(0.8);
                 sleep(500);
 
-                drumServo.setPosition(DRUM_FORWARD); sleep(DRUM_DURATION_MS);
-                drumServo.setPosition(DRUM_STOP);
-                sleep(1000);
-
-
-
-                clawServo.setPosition(0.1);
-                sleep(300);
-                clawServo.setPosition(0.8);
-                sleep(500);
-                //armMotor.setPower(0);
-
-                drumServo.setPosition(DRUM_FORWARD); sleep(DRUM_DURATION_MS);
-                drumServo.setPosition(DRUM_STOP);
-                sleep(750);
-
-                clawServo.setPosition(0.1);
-                sleep(300);
-                clawServo.setPosition(0.8);
-                sleep(500);
-                armMotor.setPower(0);
-
-                drumServo.setPosition(DRUM_FORWARD); sleep(DRUM_DURATION_MS);
-                drumServo.setPosition(DRUM_STOP);
-                sleep(750);
-
-                clawServo.setPosition(0.1);
-                sleep(300);
-                clawServo.setPosition(0.8);
-                sleep(500);
-                armMotor.setPower(0);
 
 
 
@@ -179,8 +163,8 @@ public class big_red_triangle extends LinearOpMode {
             telemetry.update();
 
             // === Движение вперёд после сканирования ===
-            driveDistanceBackward(15.0, DRIVE_POWER, leftFront, leftBack, rightFront, rightBack);
-            sleep(500);
+         //   driveDistanceBackward(15.0, DRIVE_POWER, leftFront, leftBack, rightFront, rightBack);
+          //  sleep(500);
 
             // === Выполнение по ID ===
             if (detectedId == 21) {
@@ -190,8 +174,7 @@ public class big_red_triangle extends LinearOpMode {
                 clawServo.setPosition(0.1); sleep(300);
                 clawServo.setPosition(0.8); sleep(500);
 
-                drumServo.setPosition(DRUM_FORWARD); sleep(DRUM_DURATION_MS);
-                drumServo.setPosition(DRUM_STOP);
+                drumServo.setPosition(DRUM_POS_120);
                 sleep(750);
 
                 clawServo.setPosition(0.1);
@@ -199,8 +182,7 @@ public class big_red_triangle extends LinearOpMode {
                 clawServo.setPosition(0.8);
                 sleep(500);
 
-                drumServo.setPosition(DRUM_FORWARD); sleep(DRUM_DURATION_MS);
-                drumServo.setPosition(DRUM_STOP);
+                drumServo.setPosition(DRUM_POS_240);
                 sleep(750);
 
                 clawServo.setPosition(0.1);
@@ -214,8 +196,7 @@ public class big_red_triangle extends LinearOpMode {
                 armMotor.setPower(1);
                 sleep(1000);
 
-                drumServo.setPosition(DRUM_FORWARD); sleep(DRUM_DURATION_MS);
-                drumServo.setPosition(DRUM_STOP);
+                drumServo.setPosition(DRUM_POS_120);
                 sleep(750);
 
 
@@ -224,12 +205,10 @@ public class big_red_triangle extends LinearOpMode {
                 clawServo.setPosition(0.8);
                 sleep(500);
 
-                drumServo.setPosition(DRUM_FORWARD); sleep(DRUM_DURATION_MS);
-                drumServo.setPosition(DRUM_STOP);
+                drumServo.setPosition(0.07);
                 sleep(750);
 
-                drumServo.setPosition(DRUM_FORWARD); sleep(DRUM_DURATION_MS);
-                drumServo.setPosition(DRUM_STOP);
+
                 sleep(750);
 
                 clawServo.setPosition(0.1);
@@ -237,11 +216,10 @@ public class big_red_triangle extends LinearOpMode {
                 clawServo.setPosition(0.8);
                 sleep(500);
 
-                drumServo.setPosition(DRUM_FORWARD); sleep(DRUM_DURATION_MS);
-                drumServo.setPosition(DRUM_STOP);
+                drumServo.setPosition(DRUM_POS_240);
                 sleep(750);
-                drumServo.setPosition(DRUM_FORWARD); sleep(DRUM_DURATION_MS);
-                drumServo.setPosition(DRUM_STOP);
+            //    drumServo.setPosition(DRUM_FORWARD); sleep(DRUM_DURATION_MS);
+           //     drumServo.setPosition(DRUM_STOP);
                 sleep(750);
 
                 clawServo.setPosition(0.1);
@@ -255,17 +233,20 @@ public class big_red_triangle extends LinearOpMode {
                 armMotor.setPower(1);
                 sleep(1000);
 
-                drumServo.setPosition(DRUM_FORWARD); sleep(DRUM_DURATION_MS);
-                drumServo.setPosition(DRUM_STOP);
+                drumServo.setPosition(DRUM_POS_120);
                 sleep(750);
+           //     drumServo.setPosition(DRUM_FORWARD); sleep(DRUM_DURATION_MS);
+            //    drumServo.setPosition(DRUM_STOP);
 
-                clawServo.setPosition(1);
+
+                clawServo.setPosition(0.1);
                 sleep(300);
                 clawServo.setPosition(0.8);
                 sleep(500);
 
-                drumServo.setPosition(DRUM_FORWARD); sleep(DRUM_DURATION_MS);
-                drumServo.setPosition(DRUM_STOP);
+                drumServo.setPosition(DRUM_POS_240);
+                sleep(750);
+
                 sleep(750);
 
                 clawServo.setPosition(0.1);
@@ -273,8 +254,7 @@ public class big_red_triangle extends LinearOpMode {
                 clawServo.setPosition(0.8);
                 sleep(500);
 
-                drumServo.setPosition(DRUM_FORWARD); sleep(DRUM_DURATION_MS);
-                drumServo.setPosition(DRUM_STOP);
+                drumServo.setPosition(0.07);
                 sleep(750);
 
                 clawServo.setPosition(0.1);
@@ -294,27 +274,29 @@ public class big_red_triangle extends LinearOpMode {
                 clawServo.setPosition(0.1);
                 sleep(300);
                 clawServo.setPosition(0.8);
-                sleep(500);
+                sleep(5000);
                 //armMotor.setPower(0);
+                drumServo.setPosition(DRUM_POS_120);
+                sleep(750);
+          //      drumServo.setPosition(DRUM_FORWARD); sleep(DRUM_DURATION_MS);
+          //      drumServo.setPosition(DRUM_STOP);
 
-                drumServo.setPosition(DRUM_FORWARD); sleep(DRUM_DURATION_MS);
-                drumServo.setPosition(DRUM_STOP);
+
+                clawServo.setPosition(0.1);
+                sleep(300);
+                clawServo.setPosition(0.8);
+                sleep(5000);
+                //armMotor.setPower(0);
+                drumServo.setPosition(DRUM_POS_240);
+                sleep(750);
+       //         drumServo.setPosition(DRUM_FORWARD); sleep(DRUM_DURATION_MS);
+       //         drumServo.setPosition(DRUM_STOP);
                 sleep(750);
 
                 clawServo.setPosition(0.1);
                 sleep(300);
                 clawServo.setPosition(0.8);
-                sleep(500);
-                //armMotor.setPower(0);
-
-                drumServo.setPosition(DRUM_FORWARD); sleep(DRUM_DURATION_MS);
-                drumServo.setPosition(DRUM_STOP);
-                sleep(750);
-
-                clawServo.setPosition(0.1);
-                sleep(300);
-                clawServo.setPosition(0.8);
-                sleep(500);
+                sleep(5000);
                 armMotor.setPower(0);
             }
             turnRight(15,TURN_POWER,leftFront,leftBack,rightFront,rightBack);
@@ -362,14 +344,14 @@ public class big_red_triangle extends LinearOpMode {
             // Едем НАЗАД: левые (+), правые (-)
             leftFront.setTargetPosition(-targetTicks);
             leftBack.setTargetPosition(targetTicks);
-            rightFront.setTargetPosition(-targetTicks);
-            rightBack.setTargetPosition(targetTicks);
+            rightFront.setTargetPosition(targetTicks);
+            rightBack.setTargetPosition(-targetTicks);
         } else {
             // Едем ВПЕРЁД: левые (-), правые (+)
             leftFront.setTargetPosition(targetTicks);
             leftBack.setTargetPosition(-targetTicks);
-            rightFront.setTargetPosition(targetTicks);
-            rightBack.setTargetPosition(-targetTicks);
+            rightFront.setTargetPosition(-targetTicks);
+            rightBack.setTargetPosition(targetTicks);
         }
 
         setMotorModes(DcMotor.RunMode.RUN_TO_POSITION, leftFront, leftBack, rightFront, rightBack);

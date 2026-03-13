@@ -4,11 +4,12 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 @TeleOp(name = "TeleOp1Player", group = "TeleOp")
-public class TeleOpDefault2 extends OpMode {
+public class TeleOp1player extends OpMode {
 
     // Движение
     private DcMotor frontLeft, frontRight, backLeft, backRight;
@@ -53,13 +54,17 @@ public class TeleOpDefault2 extends OpMode {
     @Override
     public void init ( ) {
         // Инициализация моторов и серво
+        //колесная база
         frontLeft = hardwareMap.get(DcMotor.class, "frontLeft");
         frontRight = hardwareMap.get(DcMotor.class, "frontRight");
         backLeft = hardwareMap.get(DcMotor.class, "backLeft");
         backRight = hardwareMap.get(DcMotor.class, "backRight");
+        //Пулятель
         armMotor = hardwareMap.get(DcMotor.class, "armMotor");
-        clawServo = hardwareMap.get(Servo.class, "clawServo");
         uptrigger = hardwareMap.get(DcMotor.class, "uptrigger");
+        //подача
+        clawServo = hardwareMap.get(Servo.class, "clawServo");
+        //карусель
         servo2 = hardwareMap.get(CRServo.class, "servo2");
 
         // Направления моторов

@@ -1,27 +1,32 @@
-package org.firstinspires.ftc.teamcode.ActiveCode.Opmode.act.TeleOp;
+package org.firstinspires.ftc.teamcode.ActiveCode.Opmode.act.trash;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.hardware.CRServo;
 
-@TeleOp(name = "TeleOp2Player", group = "TeleOp")
-public class TeleOpDefault3 extends OpMode {
+
+@TeleOp(name = "TeleOp2player", group = "TeleOp")
+public class TeleOp2plsyer extends OpMode {
 
     // Движение
     private DcMotor frontLeft, frontRight, backLeft, backRight;
     private DcMotor armMotor;
     private DcMotor catchMotor;
     private DcMotor CatchMotor1;
-    private Servo clawServo;
+ //   private Servo clawServo;
     private DcMotor uptrigger;
 
     // Continuous rotation servo (барабан) — 6208MG / MG996R
     private Servo servo2;
+    private CRServo servo22;
     private Servo servoGun;
-
+    private Servo clawServo;
+    private Servo catch_up;
     // Минимальная коррекция движения
     private static final double CORRECTION_SCALE = 0.1;
 
@@ -47,8 +52,13 @@ public class TeleOpDefault3 extends OpMode {
     private boolean leftBumperPressed = false;  // для -10°
 
     // Состояния
+
+    //coctoния
     private int armState = 0;
     private boolean bPressed = false;
+    int catchState = 0;           // 0 = стоп, 1 = вперед (X), -1 = назад (A)
+    boolean xPressedG3 = false;   // Флаг для кнопки X
+    boolean aPressedG3 = false;   // Флаг для кнопки A
 
     private boolean dpadUpPressed = false;
     private boolean dpadDownPressed = false;
@@ -56,9 +66,8 @@ public class TeleOpDefault3 extends OpMode {
     //private boolean yPressedUptrigger = false;
     // private boolean xPressed = false;
 
-
     private boolean catchMotorsOn = false;
-//    private boolean aPressed = false; // для debounce кнопки A
+    private boolean isServo2Moving = false;
 //   private boolean dpadDownPressedG2 = false;  // для gamepad2.dpad_down
     private boolean aPressedG2 = false;
 
@@ -80,18 +89,22 @@ public class TeleOpDefault3 extends OpMode {
         frontRight = hardwareMap.get(DcMotor.class, "frontRight");
         backLeft = hardwareMap.get(DcMotor.class, "backLeft");
         backRight = hardwareMap.get(DcMotor.class, "backRight");
-        armMotor = hardwareMap.get(DcMotor.class, "armMotor");
+        armMotor = hardwareMap.get(DcMotor.class, "1motor_shooter");//armmotor
         clawServo = hardwareMap.get(Servo.class, "clawServo");
-        uptrigger = hardwareMap.get(DcMotor.class, "uptrigger");
-        servo2 = hardwareMap.get(Servo.class, "servo2");
+        uptrigger = hardwareMap.get(DcMotor.class, "2motor_shooter");//uptrigger
+        servo2 = hardwareMap.get(Servo.class, "carousel");//servo2
+        servo22 = hardwareMap.get(CRServo.class,"catch_3");//servo2
         catchMotor = hardwareMap.get(DcMotor.class, "catch");
         CatchMotor1 = hardwareMap.get(DcMotor.class, "catch1");
-        servoGun = hardwareMap.get(Servo.class, "servoGun");
+        servoGun = hardwareMap.get(Servo.class, "guide");//servoGun
+        catch_up = hardwareMap.get(Servo.class,"catch_up");
         // Направления моторов
         frontLeft.setDirection(DcMotor.Direction.REVERSE);
-        backLeft.setDirection(DcMotor.Direction.REVERSE);
+        backLeft.setDirection(DcMotor.Direction.FORWARD);
+        catchMotor.setDirection(DcMotor.Direction.REVERSE);
+        CatchMotor1.setDirection(DcMotor.Direction.FORWARD);
         frontRight.setDirection(DcMotor.Direction.FORWARD);
-        backRight.setDirection(DcMotor.Direction.FORWARD);
+        backRight.setDirection(DcMotor.Direction.REVERSE);
 
         // Режимы работы (без энкодеров)
         frontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -101,11 +114,17 @@ public class TeleOpDefault3 extends OpMode {
         armMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         uptrigger.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
+        frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
         // Исходное положение барабана — стоп
 
         drumIndex = 1; // начальная позиция — 120°
         servo2.setPosition((drumIndex * 120.0) / 270.0);
-
+        //исходное положение для сервы поднятия мяча (захват)
+        //catch_up.setPosition(0);
         telemetry.addData("Status", "Initialized");
         telemetry.update();
         servo2.setPosition(START_ANGLE / 270.0);
@@ -118,7 +137,7 @@ public class TeleOpDefault3 extends OpMode {
         // === Управление движением
         double driveSpeedScale = gamepad1.b ? 0.2 : 1.0;
         double y = gamepad1.left_stick_y * driveSpeedScale;
-        double x = -gamepad1.left_stick_x * driveSpeedScale;
+        double x = gamepad1.left_stick_x * driveSpeedScale;
         double turn = 0.0;
 
 
@@ -162,11 +181,11 @@ public class TeleOpDefault3 extends OpMode {
         backRight.setPower(br);
 
         // === Toggle armMotor (B на gamepad2) ===
-        if (gamepad1.b && !bPressed) {
+        if (gamepad2.b && !bPressed) {
             armState = (armState == 1) ? 0 : 1;
             servo2.setPosition(245.0);
             bPressed = true;
-        } else if (!gamepad1.b) {
+        } else if (!gamepad2.b) {
             bPressed = false;
         }
         armMotor.setPower(armState == 1 ? 1.0 : 0.0);
@@ -177,9 +196,75 @@ public class TeleOpDefault3 extends OpMode {
         } else {
             clawServo.setPosition(CLAW_OPEN_POS);
         }
+  /*      if (gamepad1.x) {
+            servo2.setPosition(1);
+
+        }if (gamepad1.y) {
+            servo2.setPosition(0.1);
+        } if(gamepad1.b) {
+            servo2.setPosition(0);
+        }
+*/
+// Константа для шага 120° на 270° серво
+
+        // ВЛЕВО: -120° (только если клешня ОТКРЫТА)
+        if (clawServo.getPosition() != CLAW_CLOSE_POS) {
+            if (gamepad2.dpad_left && !dpadLeftPressed) {
+                double currentPosition = servo2.getPosition();
+                double newPosition = currentPosition - 0.49;
+                if (newPosition < 0.0) {
+                    newPosition = 0.0;
+                }
+                servo2.setPosition(newPosition);
+                dpadLeftPressed = true;
+            } else if (!gamepad2.dpad_left) {
+                dpadLeftPressed = false;
+            }
+        }
+
+// ВПРАВО: +120° (только если клешня ОТКРЫТА)
+        if (clawServo.getPosition() != CLAW_CLOSE_POS) {
+            if (gamepad2.dpad_right && !dpadRightPressed) {
+                double currentPosition = servo2.getPosition();
+                double newPosition = currentPosition + 0.49;
+                if (newPosition > 1.0) {
+                    newPosition = 1.0;
+                }
+                servo2.setPosition(newPosition);
+                dpadRightPressed = true;
+            } else if (!gamepad2.dpad_right) {
+                dpadRightPressed = false;
+            }
+        }
+// ВЛЕВО: -120°
+      /*  if (gamepad1.dpad_left && !dpadLeftPressed) {
+            double currentPosition = servo2.getPosition();
+            double newPosition = currentPosition - 0.49;
+            if (newPosition < 0.0) {        // ← ИСПРАВЛЕНО: проверка НИЖНЕЙ границы
+                newPosition = 0.0;
+            }
+            servo2.setPosition(newPosition);
+            dpadLeftPressed = true;
+        } else if (!gamepad1.dpad_left) {
+            dpadLeftPressed = false;
+        }
+
+// ВПРАВО: +120°
+        if (gamepad1.dpad_right && !dpadRightPressed) {
+            double currentPosition = servo2.getPosition();
+            double newPosition = currentPosition + 0.49;
+            if (newPosition > 1.0) {        // ← проверка ВЕРХНЕЙ границы
+                newPosition = 1.0;
+            }
+            servo2.setPosition(newPosition);
+            dpadRightPressed = true;
+        } else if (!gamepad1.dpad_right) {
+            dpadRightPressed = false;
+        }
+*/
         // === СВОБОДНОЕ ВРАЩЕНИЕ НА +120° БЕЗ ОГРАНИЧЕНИЙ (до 270°) ===
 
-        if (gamepad1.dpad_right && !dpadRightPressed) {
+ /*       if (gamepad1.dpad_right && !dpadRightPressed) {
             double currentAngle = servo2.getPosition() * 270.0;
             double newAngle = currentAngle + 120.0;
             if (newAngle > 270.0) newAngle = 270.0; // только ограничение сверху
@@ -208,6 +293,7 @@ public class TeleOpDefault3 extends OpMode {
             dpadUpPressed = false;
         }
 
+
 // Вниз: конечное положение
         if (gamepad1.dpad_down && !dpadDownPressed) {
             currentAngle = FINAL_ANGLE; // 150°
@@ -230,43 +316,93 @@ public class TeleOpDefault3 extends OpMode {
                     dpadUpPressed = true;
                 } else if (!gamepad2.dpad_up) {
                     dpadUpPressed = false;}
-
+*/
 //моторы захвата
-        if (gamepad2.a && !aPressedG2) {
+      /*  if (gamepad2.x && !aPressedG2) {
             catchMotorsOn = !catchMotorsOn;
             aPressedG2 = true;
 
             if (catchMotorsOn) {
                 catchMotor.setPower(1.0);
-                CatchMotor1.setPower(-1.0);
-                servo2.setPosition(0.0);
+                CatchMotor1.setPower(1.0);
+                servo2.setPosition(0.1);
             } else {
                 catchMotor.setPower(0.0);
                 CatchMotor1.setPower(0.0);
 
             }
-        } else if (!gamepad2.a) {
+        } else if (!gamepad2.x) {
             aPressedG2 = false;}
 
-        //  //  серва(угол) угол управление +10 градусов
-                    if (gamepad2.right_bumper && !rightBumperPressed) {
-                        servoGunPosition += 10.0;
-                    if (servoGunPosition > 180.0) servoGunPosition = 180.0;
-                    servoGun.setPosition(servoGunPosition / 180.0);
-                        rightBumperPressed = true;
-                    } else if (!gamepad2.right_bumper) {
-                        rightBumperPressed = false;
+*/
+
+
+
+
+
+
+
+
+
+
+        {
+
+            // --- Обработка кнопки X (Вперед) ---
+            if (gamepad2.x && !xPressedG3) {
+                if (catchState == 1) {
+                    catchState = 0; // Если уже вперед -> выключить
+                } else {
+                    catchState = 1; // Иначе -> включить вперед
+                }
+                xPressedG3 = true;
+            } else if (!gamepad2.x) {
+                xPressedG3 = false;
+            }
+
+            // --- Обработка кнопки A (Назад) ---
+            if (gamepad2.a && !aPressedG2) {
+                if (catchState == -1) {
+                    catchState = 0; // Если уже назад -> выключить
+                } else {
+                    catchState = -1; // Иначе -> включить назад
+                }
+                aPressedG2 = true;
+            } else if (!gamepad2.a) {
+                aPressedG2 = false;
+            }
+
+            // --- Применение состояния к моторам и серво ---
+            if (catchState == 1) {
+                // РЕЖИМ ВПЕРЕД (Кнопка X)
+                catchMotor.setPower(1.0);
+                CatchMotor1.setPower(1.0);
+                servo22.setPower(1.0); // Серво крутится вперед (полная скорость)
+
+            } else if (catchState == -1) {
+                // РЕЖИМ НАЗАД (Кнопка A)
+                catchMotor.setPower(-1.0);
+                CatchMotor1.setPower(-1.0);
+                servo22.setPower(-1); // Серво крутится назад (полная скорость)
+
+            } else {
+                // РЕЖИМ СТОП
+                catchMotor.setPower(0.0);
+                CatchMotor1.setPower(0.0);
+                servo22.setPower(0); // Серво останавливается
+            }
         }
-//угол управление -10 градусов
-                    if (gamepad2.left_bumper && !leftBumperPressed) {
-                        servoGunPosition -= 10.0;
-                    if (servoGunPosition < 0.0) servoGunPosition = 0.0;
-                    servoGun.setPosition(servoGunPosition / 180.0);
-                        leftBumperPressed = true;
-                    } else if (!gamepad2.left_bumper) {
-                        leftBumperPressed = false;
+         if (gamepad2.left_bumper) {
+            servoGun.setPosition(0.05); // стоп или позиция B
+        } else {
+            servoGun.setPosition(0.8); // назад или позиция C
         }
 
+        if(gamepad2.y){
+            catch_up.setPosition(0.30);
+        }
+        else {
+            catch_up.setPosition(0.07);
+        }
 
 
         // === Телеметрия ===
