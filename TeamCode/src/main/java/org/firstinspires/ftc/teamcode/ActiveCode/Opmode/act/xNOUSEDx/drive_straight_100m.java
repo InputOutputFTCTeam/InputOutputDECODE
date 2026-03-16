@@ -1,48 +1,47 @@
-package org.firstinspires.ftc.teamcode.ActiveCode.Opmode.act.trash.rarely_used.Autonomous;
+package org.firstinspires.ftc.teamcode.ActiveCode.Opmode.act.xNOUSEDx;
 
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-
-//@Autonomous(name = "Drive Straight 100cm", group = "Auto")
-public class drive_straight extends LinearOpMode {
+//@Autonomous(name = "Drive Straight 60cm", group = "Auto")
+public class drive_straight_100m extends LinearOpMode {
 
     // Константы
     private static final double WHEEL_DIAMETER_CM = 9.6;        // Диаметр колеса в см
     private static final double COUNTS_PER_MOTOR_REV = 28;      // Ticks на валу мотора
-    private static final double DRIVE_GEAR_REDUCTION = 12.0;    // Редуктор 20:1
+    private static final double DRIVE_GEAR_REDUCTION = 12.0;    // Редуктор 12:1
     private static final double COUNTS_PER_WHEEL_REV = COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION;
     private static final double WHEEL_CIRCUMFERENCE_CM = Math.PI * WHEEL_DIAMETER_CM;
     private static final double COUNTS_PER_CM = COUNTS_PER_WHEEL_REV / WHEEL_CIRCUMFERENCE_CM;
 
     // Целевое расстояние
-    private static final double TARGET_DISTANCE_CM = 100.0;
+    private static final double TARGET_DISTANCE_CM = 70.0;
     private static final int TARGET_TICKS = (int) (COUNTS_PER_CM * TARGET_DISTANCE_CM);
 
     // Максимальная мощность
-    private static final double DRIVE_POWER = 1;
+    private static final double DRIVE_POWER = 0.8;
 
     @Override
     public void runOpMode() {
-        // Подключение моторов
+        // Подключение моторов(конфиг)
         DcMotor leftFront = hardwareMap.get(DcMotor.class, "frontLeft");
         DcMotor leftBack = hardwareMap.get(DcMotor.class, "backLeft");
         DcMotor rightFront = hardwareMap.get(DcMotor.class, "frontRight");
         DcMotor rightBack = hardwareMap.get(DcMotor.class, "backRight");
 
-        // Направление моторов
+        // Направление моторов (Forward прямо and REVERSE назад!)
         leftFront.setDirection(DcMotor.Direction.REVERSE);
-        leftBack.setDirection(DcMotor.Direction.REVERSE);
+        leftBack.setDirection(DcMotor.Direction.FORWARD);
         rightFront.setDirection(DcMotor.Direction.FORWARD);
-        rightBack.setDirection(DcMotor.Direction.FORWARD);
+        rightBack.setDirection(DcMotor.Direction.REVERSE);
 
         // Режим энкодера
         leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
+        sleep(4000);
+        //включения энкодера и запуск его
         leftFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         leftBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -67,10 +66,10 @@ public class drive_straight extends LinearOpMode {
             rightBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
             // Установка мощности
-            leftFront.setPower(-DRIVE_POWER);
-            leftBack.setPower(-DRIVE_POWER);
-            rightFront.setPower(-DRIVE_POWER);
-            rightBack.setPower(-DRIVE_POWER);
+            leftFront.setPower(DRIVE_POWER);
+            leftBack.setPower(DRIVE_POWER);
+            rightFront.setPower(DRIVE_POWER);
+            rightBack.setPower(DRIVE_POWER);
 
             // Ожидание завершения движения
             while (opModeIsActive() &&
@@ -91,6 +90,4 @@ public class drive_straight extends LinearOpMode {
             telemetry.addData("Status", "Movement complete");
             telemetry.update();
         }
-    }
-}
-
+    }}

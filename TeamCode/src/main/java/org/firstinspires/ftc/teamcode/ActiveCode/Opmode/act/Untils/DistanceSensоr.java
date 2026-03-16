@@ -30,15 +30,15 @@ public class EvgenBro extends OpMode {
         }
     }
 }*/
-package org.firstinspires.ftc.teamcode.ActiveCode.Opmode.act.modules;
+package org.firstinspires.ftc.teamcode.ActiveCode.Opmode.act.Untils;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
-@TeleOp(name = "DistanceSensorTeleOp", group = "TeleOp")
-public class Distance extends LinearOpMode {
+@TeleOp(name = "DistanceSensоr[TEST]", group = "TeleOp")
+public class DistanceSensоr extends LinearOpMode {
 
     private DistanceSensor distanceSensor;
 

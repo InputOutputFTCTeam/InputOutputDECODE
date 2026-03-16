@@ -1,17 +1,15 @@
-package org.firstinspires.ftc.teamcode.ActiveCode.Opmode.act.trash;
+package org.firstinspires.ftc.teamcode.ActiveCode.Opmode.act.TeleOp;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.hardware.CRServo;
 
 
 @TeleOp(name = "TeleOp2player", group = "TeleOp")
-public class TeleOp2plsyer extends OpMode {
+public class TeleOp2player extends OpMode {
 
     // Движение
     private DcMotor frontLeft, frontRight, backLeft, backRight;

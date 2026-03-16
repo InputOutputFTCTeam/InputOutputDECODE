@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.ActiveCode.Opmode.act.modules;
+package org.firstinspires.ftc.teamcode.ActiveCode.Opmode.act.Untils;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -10,8 +10,8 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
 import java.util.List;
 
-@TeleOp(name = "AprilTag Scan (VisionPortal)", group = "Vision")
-public class camera extends LinearOpMode {
+@TeleOp(name = "camera[TEST]", group = "TeleOp")
+public class Camera extends LinearOpMode {
 
     private VisionPortal visionPortal;
     private AprilTagProcessor aprilTag;
