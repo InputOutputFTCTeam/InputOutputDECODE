@@ -27,7 +27,7 @@ public class ColorSensоr extends LinearOpMode {
             if (g > r && g > b) {
                 detectedColor = "GREEN";
             }
-            else if (r > g && b > g) {
+            else if (b > g) {
                 detectedColor = "PURPLE";
             }
             else {

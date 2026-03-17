@@ -144,64 +144,51 @@ public class TeleOp1player extends OpMode {
         } else {
             servo2.setPower(0);
         }
-/*
-        //  ===
-        if (gamepad1.x && !xPressed) {
-            servo2.setPosition(120.0 / 180.0); // = 0.6667
-            xPressed = true;
-        } else if (!gamepad1.x) {
-            xPressed = false;
-        }*/
-   /*    // === ЗАПУСК СЕКВЕНЦИИ: X на gamepad1 ===
-        if (gamepad1.x && !xPressed) {
-            servo2.setPosition(120.0 / 180.0); // = 0.6667
-            xPressed = true;
-        } else if (!gamepad1.x) {
-            xPressed = false;
-        }*/
 
-/*        // === РУЧНОЕ УПРАВЛЕНИЕ барабаном (только в IDLE) ===
-        if (sequenceState == SequenceState.IDLE) {
-            double stickX = gamepad1.right_stick_x;
-            if (Math.abs(stickX) > 0.1) {
-                // Преобразуем [-1, 1] → [1.0, 0.0]
-                double drumPower = 0.5 - (stickX * 0.5);
-                drumPower = Math.max(0.0, Math.min(1.0, drumPower));
-                servo2.setPower(drumPower);
-            } else {
-                servo2.setPower(SERVO2_STOP); // ← ГАРАНТИРОВАННАЯ ОСТАНОВКА
-            }
+        if (gamepad1.dpad_up) {
+            backLeft.setPower(1);
+            backRight.setPower(1);
+            frontLeft.setPower(1);
+            frontRight.setPower(1);
+        }else  {
+            backRight.setPower(br);
+            backLeft.setPower(bl);
+            frontRight.setPower(fr);
+            frontLeft.setPower(fl);
         }
-
-        // === АВТОМАТИЧЕСКАЯ СЕКВЕНЦИЯ ===
-        switch (sequenceState) {
-            case STEP1_DOWN:
-                if (timer.milliseconds() > 100) {
-                    sequenceState = SequenceState.STEP2_ROTATE;
-                    servo2.setPower(SERVO2_ROTATE_SPEED); // начать вращение
-                    timer.reset();
-                }
-                break;
-
-            case STEP2_ROTATE:
-                if (timer.milliseconds() > SERVO2_ROTATE_TIME_MS) {
-                    sequenceState = SequenceState.STEP3_UP;
-                    servo2.setPower(SERVO2_STOP); // ← ОБЯЗАТЕЛЬНО ОСТАНОВИТЬ
-                    timer.reset();
-                }
-                break;
-
-            case STEP3_UP:
-                if (timer.milliseconds() > 100) {
-                    sequenceState = SequenceState.IDLE;
-                    servo2.setPower(SERVO2_STOP); // ← СТРАХОВКА
-                }
-                break;
-
-            default:
-                break;
+        if(gamepad1.dpad_left){
+            backLeft.setPower(0.75);
+            backRight.setPower(0.75);
+            frontLeft.setPower(0.75);
+            frontRight.setPower(0.75);
+        } else {
+            backRight.setPower(br);
+            backLeft.setPower(bl);
+            frontRight.setPower(fr);
+            frontLeft.setPower(fl);
         }
-*/
+        if(gamepad1.dpad_right){
+            backLeft.setPower(0.25);
+            backRight.setPower(0.25);
+            frontLeft.setPower(0.25);
+            frontRight.setPower(0.25);
+        } else {
+            frontRight.setPower(fr);
+            frontLeft.setPower(fl);
+            backRight.setPower(br);
+            backLeft.setPower(bl);
+        }
+        if(gamepad1.dpad_down){
+            backLeft.setPower(0);
+            backRight.setPower(0);
+            frontLeft.setPower(0);
+            frontRight.setPower(0);
+        } else{
+            backRight.setPower(br);
+            backLeft.setPower(bl);
+            frontRight.setPower(fr);
+            frontLeft.setPower(fl);
+        }
         // === Телеметрия ===
         telemetry.addData("Arm", armState == 1 ? "UP" : "STOP");
         telemetry.addData("Claw", gamepad2.a ? "CLOSED" : "OPEN");
