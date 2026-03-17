@@ -156,7 +156,7 @@ public class TeleOp2player extends OpMode {
         double bl = y - x + turn;
         double br = y + x - turn;
 
-        // Нормализация (если сумма > 1.0)
+
         double max = Math.max(1.0, Math.max(Math.abs(fl),
                 Math.max(Math.abs(fr), Math.max(Math.abs(bl), Math.abs(br)))));
         if (max > 1.0) {
@@ -166,8 +166,7 @@ public class TeleOp2player extends OpMode {
             br /= max;
         }
 
-        // === Toggle логика для D-Pad (gamepad1) ===
-        // UP
+
         if (gamepad1.dpad_up && !dpadUpLast) {
             dpadUpToggle = !dpadUpToggle;
             if (dpadUpToggle) {
@@ -178,7 +177,7 @@ public class TeleOp2player extends OpMode {
         }
         dpadUpLast = gamepad1.dpad_up;
 
-        // DOWN
+
         if (gamepad1.dpad_down && !dpadDownLast) {
             dpadDownToggle = !dpadDownToggle;
             if (dpadDownToggle) {
@@ -189,7 +188,7 @@ public class TeleOp2player extends OpMode {
         }
         dpadDownLast = gamepad1.dpad_down;
 
-        // LEFT
+
         if (gamepad1.dpad_left && !dpadLeftLast) {
             dpadLeftToggle = !dpadLeftToggle;
             if (dpadLeftToggle) {
@@ -200,7 +199,7 @@ public class TeleOp2player extends OpMode {
         }
         dpadLeftLast = gamepad1.dpad_left;
 
-        // RIGHT
+
         if (gamepad1.dpad_right && !dpadRightLast) {
             dpadRightToggle = !dpadRightToggle;
             if (dpadRightToggle) {
@@ -211,7 +210,7 @@ public class TeleOp2player extends OpMode {
         }
         dpadRightLast = gamepad1.dpad_right;
 
-        // === Применение мощности с приоритетами ===
+
         if (dpadUpToggle) {
             frontLeft.setPower(1.0);
             frontRight.setPower(1.0);
