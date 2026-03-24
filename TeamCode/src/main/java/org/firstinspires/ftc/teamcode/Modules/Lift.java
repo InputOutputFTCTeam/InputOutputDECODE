@@ -1,9 +1,9 @@
-package org.firstinspires.ftc.teamcode.Models;
+package org.firstinspires.ftc.teamcode.Modules;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
-public class Carousel {
+public class Lift {
     // Объявляем серву
     public Servo catchServo = null;
 

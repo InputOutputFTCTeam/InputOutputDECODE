@@ -1,9 +1,9 @@
-package org.firstinspires.ftc.teamcode.Models;
+package org.firstinspires.ftc.teamcode.Modules;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
-public class Catch {
+public class VariableAngle {
     // Объявляем серву
     public Servo catchServo = null;
 
